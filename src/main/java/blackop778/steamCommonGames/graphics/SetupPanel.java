@@ -1,5 +1,6 @@
 package blackop778.steamCommonGames.graphics;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -20,8 +21,10 @@ public class SetupPanel extends JPanel {
 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	fields.add(new InputSet(this));
 	fields.add(new InputSet(this));
-	add(new AddRemoveInfo(true, this));
-	add(new AddRemoveInfo(false, this));
+	JPanel buttonPanel = new JPanel();
+	buttonPanel.add(new AddRemoveInfo(true, this));
+	buttonPanel.add(new AddRemoveInfo(false, this));
+	add(buttonPanel, BorderLayout.PAGE_END);
     }
 
     public static class AddRemoveInfo extends JButton {
@@ -49,10 +52,9 @@ public class SetupPanel extends JPanel {
 		addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent arg0) {
-			InputSet panel = parent.fields.get(parent.fields.size() - 1);
-			parent.remove(panel.check);
-			parent.remove(panel.text);
-			parent.fields.remove(panel);
+			InputSet set = parent.fields.get(parent.fields.size() - 1);
+			parent.remove(set.panel);
+			parent.fields.remove(set);
 			parent.repaint();
 			parent.parent.pack();
 		    }});

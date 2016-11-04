@@ -10,9 +10,10 @@ import javax.swing.JTextField;
 public class InputSet {
     public JCheckBox check;
     public JTextField text;
+    public JPanel panel;
     
     public InputSet(SetupPanel parentPanel) {
-	JPanel panel = new JPanel();
+	panel = new JPanel();
 	parentPanel.add(panel);
 	check = new SetupCheckBox("", true, this);
 	panel.add(check);
