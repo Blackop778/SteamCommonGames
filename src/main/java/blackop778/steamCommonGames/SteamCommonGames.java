@@ -8,7 +8,7 @@ public class SteamCommonGames {
 
     public static void main(String[] args) {
 	JFrame frame = new JFrame("Enter the Steam IDs");
-	SetupPanel panel = new SetupPanel();
+	SetupPanel panel = new SetupPanel(frame);
 	frame.setContentPane(panel);
 	frame.setVisible(true);
 	frame.pack();
