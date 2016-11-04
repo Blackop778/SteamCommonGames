@@ -6,18 +6,22 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class SetupPanel extends JPanel {
     private static final long serialVersionUID = 3610537775428944030L;
     
     private ArrayList<InputSet> fields = new ArrayList<InputSet>();
+    public JFrame parent;
     
-    public SetupPanel() {
+    public SetupPanel(JFrame parent) {
+	this.parent = parent;
 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	fields.add(new InputSet(this));
 	fields.add(new InputSet(this));
 	add(new AddRemoveInfo(true, this));
+	add(new AddRemoveInfo(false, this));
     }
 
     public static class AddRemoveInfo extends JButton {
@@ -37,8 +41,20 @@ public class SetupPanel extends JPanel {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
 			parent.fields.add(new InputSet(parent));
+			parent.revalidate();
 			parent.repaint();
-			parent.validate();
+			parent.parent.pack();
+		    }});
+	    else
+		addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent arg0) {
+			InputSet panel = parent.fields.get(parent.fields.size() - 1);
+			parent.remove(panel.check);
+			parent.remove(panel.text);
+			parent.fields.remove(panel);
+			parent.repaint();
+			parent.parent.pack();
 		    }});
 	}
     }
