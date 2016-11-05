@@ -12,6 +12,7 @@ public class SteamCommonGames {
 	frame.setContentPane(panel);
 	frame.setVisible(true);
 	frame.pack();
+	frame.setResizable(false);
     }
 
 }
