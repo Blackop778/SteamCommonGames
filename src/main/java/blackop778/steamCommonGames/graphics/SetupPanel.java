@@ -1,6 +1,5 @@
 package blackop778.steamCommonGames.graphics;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -16,36 +15,75 @@ public class SetupPanel extends JPanel {
     private ArrayList<InputSet> fields = new ArrayList<>();
     public JFrame parent;
     static int count = 0;
+    static DoneButton done;
 
     public SetupPanel(JFrame parent) {
 	this.parent = parent;
 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	fields.add(new InputSet(this));
 	fields.add(new InputSet(this));
-	JPanel buttonPanel = new JPanel();
-	AddRemoveInfo add = new AddRemoveInfo(true, this);
-	buttonPanel.add(add);
-	AddRemoveInfo remove = new AddRemoveInfo(false, this);
-	buttonPanel.add(remove);
-	add.setBrother(remove);
-	add(buttonPanel, BorderLayout.PAGE_END);
+	ButtonPanel buttonPanel = new ButtonPanel(this);
+	add(buttonPanel);
     }
 
-    public static class AddRemoveInfo extends JButton {
+    public static class ButtonPanel extends JPanel {
+	private static final long serialVersionUID = 3319311564335045936L;
+	public SetupPanel parent;
+
+	public ButtonPanel(SetupPanel parent) {
+	    this.parent = parent;
+	    AddRemoveInfoButton add = new AddRemoveInfoButton(true, this);
+	    add(add);
+	    AddRemoveInfoButton remove = new AddRemoveInfoButton(false, this);
+	    add(remove);
+	    add.setBrother(remove);
+	    add(new DoneButton(this));
+	}
+    }
+
+    public static class DoneButton extends JButton {
+	private static final long serialVersionUID = 5582335127021262021L;
+	private ButtonPanel parent;
+
+	public DoneButton(ButtonPanel parent) {
+	    this.parent = parent;
+	    done = this;
+	    checkIfReady();
+	    setText("Done");
+	}
+
+	public void checkIfReady() {
+	    for (int i = 0; i < parent.parent.fields.size(); i++) {
+		InputSet current = parent.parent.fields.get(i);
+		if (current.check == null || current.check.isEnabled()) {
+		    if (current.text.getText().isEmpty()) {
+			setEnabled(false);
+			return;
+		    }
+		} else {
+		    setEnabled(false);
+		    return;
+		}
+	    }
+	    setEnabled(true);
+	}
+    }
+
+    public static class AddRemoveInfoButton extends JButton {
 	private static final long serialVersionUID = -3085228228149776981L;
 
 	@SuppressWarnings("unused")
 	private boolean add;
 	@SuppressWarnings("unused")
-	private SetupPanel parent;
-	private AddRemoveInfo brother;
+	private ButtonPanel parent;
+	private AddRemoveInfoButton brother;
 
-	public void setBrother(AddRemoveInfo brother) {
+	public void setBrother(AddRemoveInfoButton brother) {
 	    if (this.brother == null)
 		this.brother = brother;
 	}
 
-	public AddRemoveInfo(boolean add, SetupPanel parent) {
+	public AddRemoveInfoButton(boolean add, ButtonPanel parent) {
 	    this.add = add;
 	    this.parent = parent;
 	    setText(add ? "+" : "-");
@@ -53,26 +91,32 @@ public class SetupPanel extends JPanel {
 		addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-			parent.fields.add(new InputSet(parent));
-			parent.revalidate();
-			parent.repaint();
-			parent.parent.pack();
-			if (parent.fields.size() == 3)
+			parent.parent.fields.add(new InputSet(parent.parent));
+			parent.parent.revalidate();
+			parent.parent.repaint();
+			parent.parent.parent.pack();
+			if (parent.parent.fields.size() == 3)
 			    brother.setEnabled(true);
+			ButtonPanel newPanel = new ButtonPanel(parent.parent);
+			parent.parent.add(newPanel);
+			parent.parent.remove(parent);
+			done.setEnabled(false);
 		    }
 		});
 	    else {
-		setEnabled(false);
+		if (parent.parent.fields.size() == 2)
+		    setEnabled(false);
 		addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent arg0) {
-			InputSet set = parent.fields.get(parent.fields.size() - 1);
-			parent.remove(set.panel);
-			parent.fields.remove(set);
-			parent.repaint();
-			parent.parent.pack();
-			if (parent.fields.size() == 2)
+			InputSet set = parent.parent.fields.get(parent.parent.fields.size() - 1);
+			parent.parent.remove(set.panel);
+			parent.parent.fields.remove(set);
+			parent.parent.repaint();
+			parent.parent.parent.pack();
+			if (parent.parent.fields.size() == 2)
 			    setEnabled(false);
+			done.checkIfReady();
 		    }
 		});
 	    }

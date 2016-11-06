@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class InputSet {
     public JCheckBox check;
@@ -21,6 +23,23 @@ public class InputSet {
 	}
 	SetupPanel.count++;
 	text = new JTextField(20);
+	text.getDocument().addDocumentListener(new DocumentListener() {
+
+	    @Override
+	    public void insertUpdate(DocumentEvent e) {
+		SetupPanel.done.checkIfReady();
+	    }
+
+	    @Override
+	    public void removeUpdate(DocumentEvent e) {
+		SetupPanel.done.checkIfReady();
+	    }
+
+	    @Override
+	    public void changedUpdate(DocumentEvent e) {
+		SetupPanel.done.checkIfReady();
+	    }
+	});
 	panel.add(text);
     }
 
