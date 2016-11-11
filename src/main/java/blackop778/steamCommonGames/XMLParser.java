@@ -1,5 +1,6 @@
 package blackop778.steamCommonGames;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,21 +14,21 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 public abstract class XMLParser {
-    public static void parseXML(String xml) {
+    public static void parse2XML(File xml1, File xml2, File... xmls) {
 	try {
-	XMLInputFactory factory = XMLInputFactory.newInstance();
-	XMLEventReader reader = factory.createXMLEventReader(xml, new FileInputStream(xml));
-	while(reader.hasNext()) {
-	    XMLEvent event = reader.nextEvent();
-	    System.out.println(event.toString());
-	}
-	}
-	catch(FileNotFoundException e) {
-	    
-	}
-	catch(XMLStreamException ex) {
-	    
-	}
+		XMLInputFactory factory = XMLInputFactory.newInstance();
+		XMLEventReader reader = factory.createXMLEventReader(xml1.getAbsolutePath(), new FileInputStream(xml1));
+		while(reader.hasNext()) {
+		    XMLEvent event = reader.nextEvent();
+		    System.out.println(event.toString());
+		}
+		}
+		catch(FileNotFoundException e) {
+		    e.printStackTrace();
+		}
+		catch(XMLStreamException ex) {
+		    ex.printStackTrace();
+		}
     }
     
     public static String readFile(String path, Charset encoding) 

@@ -2,8 +2,7 @@ package blackop778.steamCommonGames.graphics;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -58,12 +57,7 @@ public class SetupPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-		    try {
-			XMLParser.parseXML(XMLParser.readFile("E:/Blackopgames.xml",Charset.availableCharsets().get("UTF-8")));
-		    } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		    }
+		    XMLParser.parse2XML(new File("E://Blackopgames.xml"), new File("E://Lotrfangames.xml"));
 		}
 		
 	    });
