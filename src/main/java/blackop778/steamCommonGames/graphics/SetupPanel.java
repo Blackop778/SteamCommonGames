@@ -2,12 +2,16 @@ package blackop778.steamCommonGames.graphics;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import blackop778.steamCommonGames.XMLParser;
 
 public class SetupPanel extends JPanel {
     private static final long serialVersionUID = 3610537775428944030L;
@@ -50,6 +54,19 @@ public class SetupPanel extends JPanel {
 	    done = this;
 	    checkIfReady();
 	    setText("Done");
+	    addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+		    try {
+			XMLParser.parseXML(XMLParser.readFile("E:/Blackopgames.xml",Charset.availableCharsets().get("UTF-8")));
+		    } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		    }
+		}
+		
+	    });
 	}
 
 	public void checkIfReady() {
