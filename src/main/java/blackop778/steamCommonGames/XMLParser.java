@@ -11,6 +11,8 @@ import java.nio.file.Paths;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 public abstract class XMLParser {
@@ -18,9 +20,21 @@ public abstract class XMLParser {
 	try {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		XMLEventReader reader = factory.createXMLEventReader(xml1.getAbsolutePath(), new FileInputStream(xml1));
+		boolean lastAppID = false;
+		boolean lastSteamID = false;
 		while(reader.hasNext()) {
 		    XMLEvent event = reader.nextEvent();
-		    System.out.println(event.toString());
+		    if(lastAppID) {
+			Characters chars = (Characters) event;
+		    }
+		    if(event.isStartElement()) {
+			StartElement start = (StartElement) event;
+			String name = start.getName().getLocalPart();
+			if(name.equalsIgnoreCase("appid"))
+			    lastAppID = true;
+			else if(name.equalsIgnoreCase("steamid"))
+			    lastSteamID = true;
+		    }
 		}
 		}
 		catch(FileNotFoundException e) {
