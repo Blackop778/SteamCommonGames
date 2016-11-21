@@ -18,37 +18,49 @@ import javax.xml.stream.events.XMLEvent;
 public abstract class XMLParser {
     public static void parse2XML(File xml1, File xml2, File... xmls) {
 	try {
-		XMLInputFactory factory = XMLInputFactory.newInstance();
-		XMLEventReader reader = factory.createXMLEventReader(xml1.getAbsolutePath(), new FileInputStream(xml1));
-		boolean lastAppID = false;
-		boolean lastSteamID = false;
-		while(reader.hasNext()) {
-		    XMLEvent event = reader.nextEvent();
-		    if(lastAppID) {
-			Characters chars = (Characters) event;
+	    XMLInputFactory factory = XMLInputFactory.newInstance();
+	    XMLEventReader reader = factory.createXMLEventReader(xml1.getAbsolutePath(), new FileInputStream(xml1));
+	    boolean lastAppID = false;
+	    boolean lastSteamID = false;
+	    String file2 = readFile(xml2.getAbsolutePath(), Charset.availableCharsets().get("UTF-8"));
+	    String[] others = new String[xmls.length];
+	    for (int i = 0; i < others.length; i++) {
+		others[i] = readFile(xmls[i].getAbsolutePath(), Charset.availableCharsets().get("UTF-8"));
+	    }
+	    while (reader.hasNext()) {
+		XMLEvent event = reader.nextEvent();
+		if (lastAppID) {
+		    lastAppID = false;
+		    Characters chars = (Characters) event;
+		    if (file2.contains(chars.getData())) {
+			System.out.println(chars.getData());
+			boolean all = true;
+			for (int i = 0; all & i < others.length; i++) {
+			    if (!others[i].contains(chars.getData()))
+				all = false;
+			}
 		    }
-		    if(event.isStartElement()) {
-			StartElement start = (StartElement) event;
-			String name = start.getName().getLocalPart();
-			if(name.equalsIgnoreCase("appid"))
-			    lastAppID = true;
-			else if(name.equalsIgnoreCase("steamid"))
-			    lastSteamID = true;
-		    }
 		}
+		if (event.isStartElement()) {
+		    StartElement start = (StartElement) event;
+		    String name = start.getName().getLocalPart();
+		    if (name.equalsIgnoreCase("appid"))
+			lastAppID = true;
+		    else if (name.equalsIgnoreCase("steamid"))
+			lastSteamID = true;
 		}
-		catch(FileNotFoundException e) {
-		    e.printStackTrace();
-		}
-		catch(XMLStreamException ex) {
-		    ex.printStackTrace();
-		}
+	    }
+	} catch (FileNotFoundException e) {
+	    e.printStackTrace();
+	} catch (XMLStreamException ex) {
+	    ex.printStackTrace();
+	} catch (IOException exc) {
+	    exc.printStackTrace();
+	}
     }
-    
-    public static String readFile(String path, Charset encoding) 
-	    throws IOException 
-	  {
-	    byte[] encoded = Files.readAllBytes(Paths.get(path));
-	    return new String(encoded, encoding);
-	  }
+
+    public static String readFile(String path, Charset encoding) throws IOException {
+	byte[] encoded = Files.readAllBytes(Paths.get(path));
+	return new String(encoded, encoding);
+    }
 }
