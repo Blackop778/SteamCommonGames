@@ -17,12 +17,14 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 public abstract class XMLParser {
-    public static void parse2XML(File xml1, File xml2, File... xmls) {
+    public static ArrayList<Game> parse2XML(File xml1, File xml2, File... xmls) {
 	try {
 	    XMLInputFactory factory = XMLInputFactory.newInstance();
 	    XMLEventReader reader = factory.createXMLEventReader(xml1.getAbsolutePath(), new FileInputStream(xml1));
 	    boolean lastAppID = false;
-	    boolean lastSteamID = false;
+	    boolean findAppName = false;
+	    boolean lastAppName = false;
+	    int appID = 0;
 	    ArrayList<Game> games = new ArrayList<>();
 	    String file2 = readFile(xml2.getAbsolutePath(), Charset.availableCharsets().get("UTF-8"));
 	    String[] others = new String[xmls.length];
@@ -42,19 +44,28 @@ public abstract class XMLParser {
 			    }
 			}
 			if (all) {
-
+			    findAppName = true;
+			    appID = Integer.valueOf(chars.getData());
 			}
 		    }
-		}
-		if (event.isStartElement()) {
+		} else if (lastAppName) {
+		    lastAppName = false;
+		    String data = ((Characters) event).getData().split("[")[2];
+		    data = data.split("]")[0];
+		    data = data.substring(1, data.length() - 1);
+		    games.add(new Game(appID, data));
+
+		} else if (event.isStartElement()) {
 		    StartElement start = (StartElement) event;
 		    String name = start.getName().getLocalPart();
 		    if (name.equalsIgnoreCase("appid")) {
 			lastAppID = true;
-		    } else if (name.equalsIgnoreCase("steamid")) {
-			lastSteamID = true;
+		    } else if (findAppName && name.equalsIgnoreCase("name")) {
+			lastAppName = true;
+			findAppName = false;
 		    }
 		}
+		return games;
 	    }
 	} catch (FileNotFoundException e) {
 	    e.printStackTrace();
@@ -63,6 +74,8 @@ public abstract class XMLParser {
 	} catch (IOException exc) {
 	    exc.printStackTrace();
 	}
+
+	return null;
     }
 
     public static String readFile(String path, Charset encoding) throws IOException {

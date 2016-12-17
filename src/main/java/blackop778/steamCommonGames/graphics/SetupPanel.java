@@ -57,7 +57,7 @@ public class SetupPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-		    XMLParser.parse2XML(new File("E://Blackopgames.xml"), new File("E://Lotrfangames.xml"));
+		    XMLParser.Game[] games = XMLParser.parse2XML(new File("E://Blackopgames.xml"), new File("E://Lotrfangames.xml")).toArray(new XMLParser.Game[0]());
 		}
 		
 	    });
@@ -90,15 +90,16 @@ public class SetupPanel extends JPanel {
 	private AddRemoveInfoButton brother;
 
 	public void setBrother(AddRemoveInfoButton brother) {
-	    if (this.brother == null)
+	    if (this.brother == null) {
 		this.brother = brother;
+	    }
 	}
 
 	public AddRemoveInfoButton(boolean add, ButtonPanel parent) {
 	    this.add = add;
 	    this.parent = parent;
 	    setText(add ? "+" : "-");
-	    if (add)
+	    if (add) {
 		addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
@@ -106,17 +107,19 @@ public class SetupPanel extends JPanel {
 			parent.parent.revalidate();
 			parent.parent.repaint();
 			parent.parent.parent.pack();
-			if (parent.parent.fields.size() == 3)
+			if (parent.parent.fields.size() == 3) {
 			    brother.setEnabled(true);
+			}
 			ButtonPanel newPanel = new ButtonPanel(parent.parent);
 			parent.parent.add(newPanel);
 			parent.parent.remove(parent);
 			done.setEnabled(false);
 		    }
 		});
-	    else {
-		if (parent.parent.fields.size() == 2)
+	    } else {
+		if (parent.parent.fields.size() == 2) {
 		    setEnabled(false);
+		}
 		addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent arg0) {
@@ -125,8 +128,9 @@ public class SetupPanel extends JPanel {
 			parent.parent.fields.remove(set);
 			parent.parent.repaint();
 			parent.parent.parent.pack();
-			if (parent.parent.fields.size() == 2)
+			if (parent.parent.fields.size() == 2) {
 			    setEnabled(false);
+			}
 			done.checkIfReady();
 		    }
 		});
