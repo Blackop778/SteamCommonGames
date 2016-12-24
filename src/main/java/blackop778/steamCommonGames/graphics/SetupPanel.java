@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import blackop778.steamCommonGames.XMLParser;
+import blackop778.steamCommonGames.XMLParser.Game;
 
 public class SetupPanel extends JPanel {
     private static final long serialVersionUID = 3610537775428944030L;
@@ -57,9 +59,18 @@ public class SetupPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-		    XMLParser.Game[] games = XMLParser.parse2XML(new File("E://Blackopgames.xml"), new File("E://Lotrfangames.xml")).toArray(new XMLParser.Game[0]());
+		    Game[] games = XMLParser
+			    .parse2XML(new File("https://steamcommunity.com/id/" + "/games?xml=1"),
+				    new File("https://steamcommunity.com/id/" + "/games?xml=1"))
+			    .toArray(new XMLParser.Game[] {});
+		    parent.parent.parent.dispose();
+		    String answer = "Common games are:\n";
+		    for (Game game : games) {
+			answer += game.name + "\n";
+		    }
+		    JOptionPane.showMessageDialog(null, answer, "Common games", JOptionPane.INFORMATION_MESSAGE);
 		}
-		
+
 	    });
 	}
 
