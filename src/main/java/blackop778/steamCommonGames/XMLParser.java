@@ -24,7 +24,7 @@ public abstract class XMLParser {
 	    boolean lastAppName = false;
 	    int appID = 0;
 	    ArrayList<Game> games = new ArrayList<>();
-	    String file2 = readURL(xml1);
+	    String file2 = readURL(xml2);
 	    String[] others = new String[xmls.length];
 	    for (int i = 0; i < others.length; i++) {
 		others[i] = readURL(xmls[i]);
