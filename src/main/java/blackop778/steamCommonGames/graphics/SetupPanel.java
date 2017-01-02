@@ -2,7 +2,8 @@ package blackop778.steamCommonGames.graphics;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -59,18 +60,28 @@ public class SetupPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-		    Game[] games = XMLParser
-			    .parse2XML(new File("https://steamcommunity.com/id/" + "/games?xml=1"),
-				    new File("https://steamcommunity.com/id/" + "/games?xml=1"))
-			    .toArray(new XMLParser.Game[] {});
-		    parent.parent.parent.dispose();
-		    String answer = "Common games are:\n";
-		    for (Game game : games) {
-			answer += game.name + "\n";
+		    try {
+			Game[] games = XMLParser
+				.parse2XML(
+					new URL("https://steamcommunity.com/id/"
+						+ parent.parent.fields.get(0).text.getText() + "/games?xml=1"),
+					new URL("https://steamcommunity.com/id/"
+						+ parent.parent.fields.get(1).text.getText() + "/games?xml=1"))
+				.toArray(new XMLParser.Game[] {});
+			System.out.println("https://steamcommunity.com/id/" + parent.parent.fields.get(0).text.getText()
+				+ "/games?xml=1");
+			System.out.println("https://steamcommunity.com/id/" + parent.parent.fields.get(1).text.getText()
+				+ "/games?xml=1");
+			parent.parent.parent.dispose();
+			String answer = "Common games are:\n";
+			for (Game game : games) {
+			    answer += game.name + "\n";
+			}
+			JOptionPane.showMessageDialog(null, answer, "Common games", JOptionPane.INFORMATION_MESSAGE);
+		    } catch (MalformedURLException e) {
+			e.printStackTrace();
 		    }
-		    JOptionPane.showMessageDialog(null, answer, "Common games", JOptionPane.INFORMATION_MESSAGE);
 		}
-
 	    });
 	}
 

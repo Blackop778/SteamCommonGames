@@ -1,12 +1,10 @@
 package blackop778.steamCommonGames;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.xml.stream.XMLEventReader;
@@ -17,19 +15,19 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 public abstract class XMLParser {
-    public static ArrayList<Game> parse2XML(File xml1, File xml2, File... xmls) {
+    public static ArrayList<Game> parse2XML(URL xml1, URL xml2, URL... xmls) {
 	try {
 	    XMLInputFactory factory = XMLInputFactory.newInstance();
-	    XMLEventReader reader = factory.createXMLEventReader(xml1.getAbsolutePath(), new FileInputStream(xml1));
+	    XMLEventReader reader = factory.createXMLEventReader(new InputStreamReader(xml1.openStream()));
 	    boolean lastAppID = false;
 	    boolean findAppName = false;
 	    boolean lastAppName = false;
 	    int appID = 0;
 	    ArrayList<Game> games = new ArrayList<>();
-	    String file2 = readFile(xml2.getAbsolutePath(), Charset.availableCharsets().get("UTF-8"));
+	    String file2 = readURL(xml1);
 	    String[] others = new String[xmls.length];
 	    for (int i = 0; i < others.length; i++) {
-		others[i] = readFile(xmls[i].getAbsolutePath(), Charset.availableCharsets().get("UTF-8"));
+		others[i] = readURL(xmls[i]);
 	    }
 	    while (reader.hasNext()) {
 		XMLEvent event = reader.nextEvent();
@@ -78,9 +76,14 @@ public abstract class XMLParser {
 	return null;
     }
 
-    public static String readFile(String path, Charset encoding) throws IOException {
-	byte[] encoded = Files.readAllBytes(Paths.get(path));
-	return new String(encoded, encoding);
+    public static String readURL(URL url) throws IOException {
+	BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+	String line;
+	String contents = "";
+	while ((line = br.readLine()) != null) {
+	    contents += line;
+	}
+	return contents;
     }
 
     public static class Game {
