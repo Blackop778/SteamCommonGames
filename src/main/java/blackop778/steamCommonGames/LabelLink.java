@@ -82,10 +82,8 @@ public class LabelLink extends JLabel {
         protected void done() {
             try {
                 get();
-            } catch (ExecutionException ee) {
-                handleException(uri, ee);
-            } catch (InterruptedException ie) {
-                handleException(uri, ie);
+            } catch (ExecutionException | InterruptedException error) {
+                handleException(uri, error);
             }
         }
 

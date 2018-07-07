@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public abstract class XMLParser {
-    public static ArrayList<Game> parse2XML(URL xml1, URL xml2, URL... xmls) {
+    public static ArrayList<Game> FindCommonGames(URL xml1, URL xml2, URL... xmls) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             XMLEventReader reader = factory.createXMLEventReader(new InputStreamReader(xml1.openStream()));
@@ -35,9 +35,10 @@ public abstract class XMLParser {
                     Characters chars = (Characters) event;
                     if (file2.contains(chars.getData())) {
                         boolean all = true;
-                        for (int i = 0; all & i < others.length; i++) {
-                            if (!others[i].contains(chars.getData())) {
+                        for (String other : others) {
+                            if (!other.contains(chars.getData())) {
                                 all = false;
+                                break;
                             }
                         }
                         if (all) {

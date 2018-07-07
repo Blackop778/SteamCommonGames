@@ -7,6 +7,14 @@ import javax.swing.*;
 public class SteamCommonGames {
 
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                | UnsupportedLookAndFeelException e) {
+            System.err.println("Could not load System Look and Feel (What makes the UI pretty). Reason: ");
+            e.printStackTrace();
+        }
+
         JFrame frame = new JFrame("Enter the Steam IDs");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         SetupPanel panel = new SetupPanel(frame);
@@ -15,5 +23,4 @@ public class SteamCommonGames {
         frame.pack();
         frame.setResizable(true);
     }
-
 }
