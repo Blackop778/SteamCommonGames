@@ -47,11 +47,14 @@ public abstract class XMLParser {
                     }
                 } else if (lastAppName) {
                     lastAppName = false;
-                    String data = ((Characters) event).getData().split("[")[2];
-                    data = data.split("]")[0];
-                    data = data.substring(1, data.length() - 1);
-                    games.add(new Game(appID, data));
-
+                    String name = ((Characters) event).getData();
+                    System.out.println("Name: " + name);
+                    if(name.contains("<![CDATA[[")) {
+                        name = name.split("\\[")[2];
+                        name = name.split("]")[0];
+                        name = name.substring(1, name.length() - 1);
+                    }
+                    games.add(new Game(appID, name));
                 } else if (event.isStartElement()) {
                     StartElement start = (StartElement) event;
                     String name = start.getName().getLocalPart();
@@ -62,14 +65,10 @@ public abstract class XMLParser {
                         findAppName = false;
                     }
                 }
-                return games;
             }
-        } catch (FileNotFoundException e) {
+            return games;
+        } catch (XMLStreamException | IOException e) {
             e.printStackTrace();
-        } catch (XMLStreamException ex) {
-            ex.printStackTrace();
-        } catch (IOException exc) {
-            exc.printStackTrace();
         }
 
         return null;
