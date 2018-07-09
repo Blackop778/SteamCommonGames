@@ -7,14 +7,17 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 
 public abstract class XMLParser {
-    public static ArrayList<Game> FindCommonGames(URL xml1, URL xml2, URL... xmls) {
+    public static Game[] FindCommonGames(URL xml1, URL xml2, URL... xmls) {
+        return FindCommonGames(null, xml1, xml2, xmls);
+    }
+
+    public static Game[] FindCommonGames(CommonGamesWorker worker, URL xml1, URL xml2, URL... xmls) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             XMLEventReader reader = factory.createXMLEventReader(new InputStreamReader(xml1.openStream()));
@@ -55,7 +58,11 @@ public abstract class XMLParser {
                         name = name.split("]")[0];
                         name = name.substring(1, name.length() - 1);
                     }
-                    games.add(new Game(appID, name));
+                    Game game = new Game(appID, name);
+                    if(worker != null) {
+                        worker.publishGame(game);
+                    }
+                    games.add(game);
                 } else if (event.isStartElement()) {
                     StartElement start = (StartElement) event;
                     String name = start.getName().getLocalPart();
@@ -67,7 +74,7 @@ public abstract class XMLParser {
                     }
                 }
             }
-            return games;
+            return games.toArray(new Game[]{});
         } catch (XMLStreamException | IOException e) {
             e.printStackTrace();
         }
@@ -75,21 +82,21 @@ public abstract class XMLParser {
         return null;
     }
 
-    public static String readURL(URL url) throws IOException {
+    private static String readURL(URL url) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
         String line;
-        String contents = "";
+        StringBuilder contents = new StringBuilder();
         while ((line = br.readLine()) != null) {
-            contents += line;
+            contents.append(line);
         }
-        return contents;
+        return contents.toString();
     }
 
     public static class Game {
         public final int appID;
         public final String name;
 
-        public Game(int appID, String name) {
+        Game(int appID, String name) {
             this.appID = appID;
             this.name = name;
         }

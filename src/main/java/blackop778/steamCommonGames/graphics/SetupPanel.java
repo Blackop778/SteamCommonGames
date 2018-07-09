@@ -1,15 +1,14 @@
 package blackop778.steamCommonGames.graphics;
 
-import blackop778.steamCommonGames.XMLParser;
+import blackop778.steamCommonGames.CommonGamesWorker;
 import blackop778.steamCommonGames.XMLParser.Game;
 
-import javax.swing.JPanel;
-import javax.swing.JFrame;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import java.awt.Container;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,14 +30,29 @@ public class SetupPanel extends JPanel {
         add(buttonPanel);
     }
 
-    void displayCommonGames(Game[] games) {
-        frame.dispose();
-        StringBuilder answer = new StringBuilder("Common games are:\n");
-        for (Game game : games) {
-            answer.append(game.name).append("\n");
+    // Todo Implement https://developer.valvesoftware.com/wiki/Steam_browser_protocol to launch games
+    public void displayCommonGames(Game[] games) {
+        ArrayList<StringBuilder> displayStrings = new ArrayList<>();
+        StringBuilder displayString = new StringBuilder("Common games are:");
+
+        for(int i = 0; i < games.length; i++) {
+            if((i + 1) % 25 == 0) {
+                displayStrings.add(displayString);
+                displayString = new StringBuilder();
+            }
+            Game game = games[i];
+            displayString.append("\n").append(game.name);
         }
-        // TODO: Display in JFrame and use column-width property
-        JOptionPane.showMessageDialog(null, answer.toString(), "Common games", JOptionPane.INFORMATION_MESSAGE);
+
+        displayStrings.add(displayString);
+
+        JPanel outputPanel = new JPanel();
+        for(StringBuilder column : displayStrings) {
+            outputPanel.add(new JTextArea(column.toString()));
+        }
+
+        frame.setContentPane(outputPanel);
+        frame.pack();
     }
 
     public static class ButtonPanel extends JPanel {
@@ -67,25 +81,19 @@ public class SetupPanel extends JPanel {
             setText("Done");
             addActionListener(arg0 -> {
                 try {
-                    JLabel comparingText = new JLabel("Comparing games...");
-                    JPanel comparingPanel = new JPanel();
-                    comparingPanel.add(comparingText);
-                    buttonPanel.setupPanel.frame.setContentPane(comparingPanel);
-                    buttonPanel.setupPanel.frame.validate();
-                    // TODO: Move FindCommonGames to SwingWorker
-                    ArrayList<Game> arrayList = XMLParser
-                            .FindCommonGames(
-                                    new URL("https://steamcommunity.com/id/"
-                                            + buttonPanel.setupPanel.fields.get(0).text.getText() + "/games?xml=1"),
-                                    new URL("https://steamcommunity.com/id/"
-                                            + buttonPanel.setupPanel.fields.get(1).text.getText() + "/games?xml=1"));
-                    if(arrayList == null) {
-                        buttonPanel.setupPanel.frame.setContentPane((Container) (new JPanel().add(new JLabel("Error while comparing games (null ArrayList returned)"))));
-                        return;
-                    }
-                    Game[] games = arrayList.toArray(new Game[]{});
-                    buttonPanel.setupPanel.displayCommonGames(games);
+                    buttonPanel.setupPanel.removeAll();
+                    JLabel comparingText = new JLabel("<html><h1>Comparing games...</html></h1>");
+                    buttonPanel.setupPanel.add(comparingText);
+                    buttonPanel.setupPanel.frame.pack();
+                    CommonGamesWorker task = new CommonGamesWorker(buttonPanel.setupPanel,
+                            new URL("https://steamcommunity.com/id/"
+                                    + buttonPanel.setupPanel.fields.get(0).text.getText() + "/games?xml=1"),
+                            new URL("https://steamcommunity.com/id/"
+                                    + buttonPanel.setupPanel.fields.get(1).text.getText() + "/games?xml=1")
+                    );
+                    task.execute();
                 } catch (MalformedURLException e) {
+                    System.err.println("Error in URL Syntax: ");
                     e.printStackTrace();
                 }
             });

@@ -52,6 +52,7 @@ public class LabelLink extends JLabel {
         public void mouseClicked(java.awt.event.MouseEvent evt) {
             JLabel l = (JLabel) evt.getSource();
             try {
+                // TODO Add Confirmation JOptionPane
                 URI uri = new java.net.URI(LabelLink.getPlainLink(l.getText()));
                 (new LinkRunner(uri)).execute();
             } catch (URISyntaxException use) {
@@ -88,7 +89,7 @@ public class LabelLink extends JLabel {
         }
 
         private static void handleException(URI u, Exception e) {
-            JOptionPane.showMessageDialog(null, "Sorry, a problem occurred while trying to open this link in your system's standard browser.", "A problem occured", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Sorry, a problem occurred while trying to open this link in your system's standard browser.", "A problem occurred", JOptionPane.ERROR_MESSAGE);
         }
     }
 

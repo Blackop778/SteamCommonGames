@@ -2,7 +2,9 @@ package blackop778.steamCommonGames;
 
 import blackop778.steamCommonGames.graphics.SetupPanel;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class SteamCommonGames {
 
@@ -15,7 +17,8 @@ public class SteamCommonGames {
             e.printStackTrace();
         }
 
-        JFrame frame = new JFrame("Enter the Steam IDs");
+        // Pass null object to make JFrame appear in task bar
+        JFrame frame = new JFrame("Enter the Steam IDs",null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         SetupPanel panel = new SetupPanel(frame);
         frame.setContentPane(panel);

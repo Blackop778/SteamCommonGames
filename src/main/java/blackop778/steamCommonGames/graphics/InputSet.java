@@ -1,10 +1,10 @@
 package blackop778.steamCommonGames.graphics;
 
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class InputSet {
     public JCheckBox check;
@@ -49,12 +49,7 @@ public class InputSet {
         public SetupCheckBox(String text, boolean selected, InputSet parent) {
             super(text, selected);
             this.parent = parent;
-            addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    parent.text.setEnabled(!parent.text.isEnabled());
-                }
-            });
+            addActionListener(arg0 -> parent.text.setEnabled(!parent.text.isEnabled()));
         }
     }
 }
