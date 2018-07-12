@@ -24,7 +24,7 @@ public abstract class XMLParser {
             boolean lastAppID = false;
             boolean findAppName = false;
             boolean lastAppName = false;
-            int appID = 0;
+            String appID = "";
             ArrayList<Game> games = new ArrayList<>();
             String file2 = readURL(xml2);
             String[] others = new String[xmls.length];
@@ -46,7 +46,7 @@ public abstract class XMLParser {
                         }
                         if (all) {
                             findAppName = true;
-                            appID = Integer.valueOf(chars.getData());
+                            appID = chars.getData();
                         }
                     }
                 } else if (lastAppName) {
@@ -93,10 +93,10 @@ public abstract class XMLParser {
     }
 
     public static class Game {
-        public final int appID;
+        public final String appID;
         public final String name;
 
-        Game(int appID, String name) {
+        Game(String appID, String name) {
             this.appID = appID;
             this.name = name;
         }

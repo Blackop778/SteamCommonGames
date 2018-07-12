@@ -18,7 +18,7 @@ public class SteamCommonGames {
         }
 
         // Pass null object to make JFrame appear in task bar
-        JFrame frame = new JFrame("Enter the Steam IDs",null);
+        JFrame frame = new JFrame("Steam Common Games",null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         SetupPanel panel = new SetupPanel(frame);
         frame.setContentPane(panel);

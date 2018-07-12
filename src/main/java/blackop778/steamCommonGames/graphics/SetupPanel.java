@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,26 +33,19 @@ public class SetupPanel extends JPanel {
 
     // Todo Implement https://developer.valvesoftware.com/wiki/Steam_browser_protocol to launch games
     public void displayCommonGames(Game[] games) {
-        ArrayList<StringBuilder> displayStrings = new ArrayList<>();
         StringBuilder displayString = new StringBuilder("Common games are:");
 
-        for(int i = 0; i < games.length; i++) {
-            if((i + 1) % 25 == 0) {
-                displayStrings.add(displayString);
-                displayString = new StringBuilder();
-            }
-            Game game = games[i];
-            displayString.append("\n").append(game.name);
+        for(int i = 0; i + 1 < games.length; i += 2) {
+            String intermediate1 = games[i].name + " - " + games[i].appID;
+            String intermediate2 = games[i + 1].name + " - " + games[i + 1].appID ;
+            displayString.append(String.format("\n%-66s    %s", intermediate1, intermediate2));
         }
 
-        displayStrings.add(displayString);
-
-        JPanel outputPanel = new JPanel();
-        for(StringBuilder column : displayStrings) {
-            outputPanel.add(new JTextArea(column.toString()));
+        if(games.length % 2 == 1) {
+            displayString.append("\n").append(games[games.length - 1].name).append(" - ").append(games[games.length - 1].appID);
         }
 
-        frame.setContentPane(outputPanel);
+        frame.setContentPane(new JScrollPane(new JTextArea(displayString.toString())));
         frame.pack();
     }
 
