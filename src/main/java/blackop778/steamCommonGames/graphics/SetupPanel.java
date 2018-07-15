@@ -79,18 +79,24 @@ public class SetupPanel extends JPanel {
                     JLabel comparingText = new JLabel("<html><h1>Comparing games...</html></h1>");
                     buttonPanel.setupPanel.add(comparingText);
                     buttonPanel.setupPanel.frame.pack();
+                    URL[] extraURLs = new URL[buttonPanel.setupPanel.fields.size() - 2];
+                    for(int i = 2; i < buttonPanel.setupPanel.fields.size(); i++) {
+                        extraURLs[i - 2] = generateURL(buttonPanel.setupPanel.fields.get(i).text.getText());
+                    }
                     CommonGamesWorker task = new CommonGamesWorker(buttonPanel.setupPanel,
-                            new URL("https://steamcommunity.com/id/"
-                                    + buttonPanel.setupPanel.fields.get(0).text.getText() + "/games?xml=1"),
-                            new URL("https://steamcommunity.com/id/"
-                                    + buttonPanel.setupPanel.fields.get(1).text.getText() + "/games?xml=1")
-                    );
+                            generateURL(buttonPanel.setupPanel.fields.get(0).text.getText()),
+                            generateURL(buttonPanel.setupPanel.fields.get(1).text.getText()),
+                            extraURLs);
                     task.execute();
                 } catch (MalformedURLException e) {
                     System.err.println("Error in URL Syntax: ");
                     e.printStackTrace();
                 }
             });
+        }
+
+        private URL generateURL(String id) throws MalformedURLException {
+            return new URL("https://steamcommunity.com/id/" + id + "/games?xml=1");
         }
 
         void checkIfReady() {

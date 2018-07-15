@@ -4,6 +4,7 @@ import blackop778.steamCommonGames.XMLParser.Game;
 import blackop778.steamCommonGames.graphics.SetupPanel;
 
 import javax.swing.SwingWorker;
+import javax.xml.stream.XMLStreamException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -14,7 +15,7 @@ public class CommonGamesWorker extends SwingWorker<Game[], Game> {
     private final URL xml2;
     private final URL[] xmls;
 
-    public CommonGamesWorker(SetupPanel panel, URL xml1, URL xml2, URL... xmls) {
+    public CommonGamesWorker(SetupPanel panel, URL xml1, URL xml2, URL[] xmls) {
         this.panel = panel;
         this.xml1 = xml1;
         this.xml2 = xml2;
@@ -23,7 +24,19 @@ public class CommonGamesWorker extends SwingWorker<Game[], Game> {
 
     @Override
     protected Game[] doInBackground() {
-        return XMLParser.FindCommonGames(this, xml1, xml2, xmls);
+        try {
+            return XMLParser.findCommonGames(this, xml1, xml2, xmls);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (XMLParser.ReaderCancelledException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        }
+
+        return new Game[] {};
     }
 
     @Override
